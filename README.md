@@ -102,11 +102,11 @@ Pour arrêter Snort, il suffit d'utiliser `CTRL-C`.
 
 ## Utilisation comme un IDS
 
-Pour enregistrer seulement les alertes et pas tout le trafic, on execute Snort en mode IDS. Il faudra donc spécifier un fichier contenant des règles. 
+Pour enregistrer seulement les alertes et pas tout le trafic, on exécute Snort en mode IDS. Il faudra donc spécifier un fichier contenant des règles. 
 
 Il faut noter que `/etc/snort/snort.config` contient déjà des références aux fichiers de règles disponibles avec l'installation par défaut. Si on veut tester Snort avec des règles simples, on peut créer un fichier de config personnalisé (par exemple `mysnort.conf`) et importer un seul fichier de règles utilisant la directive "include".
 
-Les fichiers de règles sont normalement stockes dans le repertoire `/etc/snort/rules/`, mais en fait un fichier de config et les fichiers de règles peuvent se trouver dans n'importe quel repertoire. 
+Les fichiers de règles sont normalement stockes dans le répertoire `/etc/snort/rules/`, mais en fait un fichier de config et les fichiers de règles peuvent se trouver dans n'importe quel répertoire. 
 
 Par exemple, créez un fichier de config `mysnort.conf` dans le repertoire `/etc/snort` avec le contenu suivant :
 
@@ -150,7 +150,7 @@ Cette règle décrit une alerte générée quand Snort trouve un paquet avec tou
 * Emis depuis n'importe quelle adresse et depuis n'importe quel port
 * A destination du réseau identifié par l'adresse 192.168.1.0/24 sur le port 111
 
-Le text jusqu'au premier parenthèse est l'entête de la règle. 
+Le texte jusqu'à la première parenthèse est l'entête de la règle. 
 
 ```
 alert tcp any any -> 192.168.1.0/24 111
@@ -253,7 +253,7 @@ log 192.168.1.0/24 any <> 192.168.1.0/24 23
 
 Si Snort détecte un paquet qui correspond à une règle, il envoie un message d'alerte ou il journalise le message. Les alertes peuvent être envoyées au syslog, journalisées dans un fichier text d'alertes ou affichées directement à l'écran.
 
-Le système envoie **les alertes vers le syslog** et il peut en option envoyer **les paquets "offensifs" vers une structure de repertoires**.
+Le système envoie **les alertes vers le syslog** et il peut en option envoyer **les paquets "offensifs" vers une structure de répertoires**.
 
 Les alertes sont journalisées via syslog dans le fichier `/var/log/snort/alerts`. Toute alerte se trouvant dans ce fichier aura son paquet correspondant dans le même repertoire, mais sous le fichier snort.log.xxxxxxxxxx où xxxxxxxxxx est l'heure Unix du commencement du journal.
 
@@ -288,7 +288,17 @@ alert tcp any any -> any any (msg:"Mon nom!"; content:"Rubinstein"; sid:4000015;
 
 ---
 
-**Reponse :**  
+**Réponse :**  
+
+Action : alert - générer une alerte et écrire le paquet dans le journal
+
+Adresses IP et Ports : Depuis n'importe quelles adresses IP et depuis n'importe quels ports vers (->) n'importe quelles adresses IP et vers n'importe quels ports
+
+Options : écrit le paquet dans le journal avec le message "Mon nom!" lorsque le contenu "Rubinstein" est observé dans le paquet. 
+
+sid:4000015 : *sid* est mot-clef servant à identifier les règles Snort. Ainsi en lisant le journal nous pouvons retrouver rapidement quelle règle a déclenché l'alerte
+
+rev:1 : *rev* est un mot-clef servant à identifier les révisions de la règle Snort (est utilisé de pair avec *sid*)
 
 ---
 
@@ -302,17 +312,47 @@ sudo snort -c myrules.rules -i eth0
 
 ---
 
-**Reponse :**  
+**Réponse :**  
+
+Nous voyons que Snort s'initialise avec *rule chains* et qu'il en lit exactement une qui des règles de détections. La suite de l’initialisation nous conforte dans cette idée avec par exemple le nombre de caractère du motif de recherche qui contient  X caractères et la longueur de ce  même motif est de X-1
 
 ---
 
-Aller à un site web contenant votre nom ou votre mot clé que vous avez choisi dans son text (il faudra chercher un peu pour trouver un site en http...). Ensuite, arrêter Snort avec `CTRL-C`.
+Aller à un site web contenant votre nom ou votre mot clé que vous avez choisi dans son texte (il faudra chercher un peu pour trouver un site en http...). Ensuite, arrêter Snort avec `CTRL-C`.
 
 **Question 3: Que voyez-vous ?**
 
 ---
 
-**Reponse :**  
+**Réponse :**  
+
+Nous observons un rapport de Snort avec toutes les chiffres que le logiciel a pu récolté pendant sont exécution. Plus particulièrement nous voyons : 
+
+```bash
+===============================================================================
+Action Stats:
+     Alerts:           15 (  2.451%)
+     Logged:           15 (  2.451%)
+     Passed:            0 (  0.000%)
+Limits:
+      Match:            0
+      Queue:            0
+        Log:            0
+      Event:            0
+      Alert:            0
+Verdicts:
+      Allow:          612 ( 97.764%)
+      Block:            0 (  0.000%)
+    Replace:            0 (  0.000%)
+  Whitelist:            0 (  0.000%)
+  Blacklist:            0 (  0.000%)
+     Ignore:            0 (  0.000%)
+      Retry:            0 (  0.000%)
+===============================================================================
+
+```
+
+
 
 ---
 
@@ -323,6 +363,29 @@ Aller au répertoire /var/log/snort. Ouvrir le fichier `alert`. Vérifier qu'il 
 ---
 
 **Reponse :**  
+
+* champ 1 : contient le numéro de la règle ayant été déclenchée avec son message
+
+* champ 2 : contient la catégorie (*classType*) d'une règle de détection. Cette classification donne une idée sur la sévérité de l'attaque.
+* champ 3 : date, temps Unix et source des données
+* champ 4 : Champs du paquet déclencheur
+* champ 5 : Champs du paquet déclencheur
+* champ 6 : Champs du paquet déclencheur
+
+
+
+```bash
+1. [**] [1:4000015:1] Mon nom! [**]
+2. [Priority: 0] 
+3. 04/02-21:14:26.226758 192.168.1.51:35496 -> 213.186.33.17:80
+4. TCP TTL:64 TOS:0x0 ID:2797 IpLen:20 DgmLen:518 DF
+5. ***AP*** Seq: 0x7AF3A0FA  Ack: 0x8DBDDD4D  Win: 0x5A4  TcpLen: 32
+6. TCP Options (3) => NOP NOP TS: 4167101540 784
+```
+
+
+
+
 
 ---
 
@@ -337,7 +400,13 @@ Ecrire une règle qui journalise (sans alerter) un message à chaque fois que Wi
 
 ---
 
-**Reponse :**  
+**Réponse :**  
+
+
+
+
+
+
 
 ---
 
