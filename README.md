@@ -290,15 +290,17 @@ alert tcp any any -> any any (msg:"Mon nom!"; content:"Rubinstein"; sid:4000015;
 
 **Réponse :**  
 
-Action : alert - générer une alerte et écrire le paquet dans le journal
+Action (alert): - générer une alerte et écrire le paquet dans le journal
 
-Adresses IP et Ports : Depuis n'importe quelles adresses IP et depuis n'importe quels ports vers (->) n'importe quelles adresses IP et vers n'importe quels ports
+Adresses IP et Ports (any any) : Depuis n'importe quelles adresses IP et depuis n'importe quels ports vers (->) n'importe quelles adresses IP et vers n'importe quels ports
 
-Options : écrit le paquet dans le journal avec le message "Mon nom!" lorsque le contenu "Rubinstein" est observé dans le paquet. 
+Options (msg:"Mon nom!"; content:"Rubinstein"): écrit le paquet dans le journal avec le message "Mon nom!" lorsque le contenu "Rubinstein" est observé dans le paquet. 
 
 sid:4000015 : *sid* est mot-clef servant à identifier les règles Snort. Ainsi en lisant le journal nous pouvons retrouver rapidement quelle règle a déclenché l'alerte
 
 rev:1 : *rev* est un mot-clef servant à identifier les révisions de la règle Snort (est utilisé de pair avec *sid*)
+
+Dès que nous lançons la règle cela va vérifier si les paquets contiennent le mot "Rubinstein". Dès que ca le détecte, cela va l'écrire dans les alertes.
 
 ---
 
@@ -316,9 +318,9 @@ sudo snort -c myrules.rules -i eth0
 
 Nous voyons plusieurs choses : 
 
-* Le message "WARNING: No preprocessors configured for policy 0." est affiché 
+* Le message "WARNING: No preprocessors configured for policy 0." est affiché. C'est lié au faite que nous n'avons pas de preprocesseur configuré pour la politique 0. 
 
-* Snort s'initialise avec *rule chains* et qu'il en lit exactement une qui des règles de détections. La suite de l’initialisation nous conforte dans cette idée avec par exemple le nombre de caractère du motif de recherche qui contient  X caractères et la longueur de ce  même motif est de X-1
+* Snort s'initialise avec des *rule chains* et cela nous permet de voir le nombre *detection rules, decoder rules preprocessor rules*.
 
 ---
 
@@ -354,6 +356,7 @@ Verdicts:
       Retry:            0 (  0.000%)
 ===============================================================================
 
+site web: [http://www.brunolegrand.net](http://www.brunolegrand.net)
 ```
 
 ---
@@ -404,11 +407,13 @@ Ecrire une règle qui journalise (sans alerter) un message à chaque fois que Wi
 
 **Réponse :**  
 
+```bash
+alert tcp any any -> 91.198.174.192 any (msg:"Visite sur wikipédia!"; sid:4000045; rev:1;)
+```
 
+Les alertes sont journalisées avec leur message dans /var/log/snort/alert.
 
-
-
-
+Toutes alertes se trouvant dans ce fichier aura son paquet correspondant dans le même répertoire, mais sous le nom de fichier snort.log.xxxxxxxxxx où xxxxxxxxxx est l'heure Unix du commencement du journal.
 
 ---
 
@@ -424,6 +429,16 @@ Ecrire une règle qui alerte à chaque fois que votre système reçoit un ping d
 
 **Reponse :**  
 
+```bash
+alert icmp any any -> 10.192.105.119 any (itype: 8; msg: "Ping helo - request detected"; sid:4000000054646; rev:1;)
+```
+
+Nous avons configuré le scope pour que n'importe qui qui envoie un ping sur notre adresse ip soit alerté. (itype: 8 qui correspend à la requête ICMP echo request)
+
+Les alertes sont journalisées avec leur message dans /var/log/snort/alert.
+
+Toutes alertes se trouvant dans ce fichier aura son paquet correspondant dans le même répertoire, mais sous le nom de fichier snort.log.xxxxxxxxxx où xxxxxxxxxx est l'heure Unix du commencement du journal.
+
 ---
 
 --
@@ -438,8 +453,15 @@ Modifier votre règle pour que les pings soient détectés dans les deux sens.
 
 **Reponse :**  
 
----
+```
+alert icmp any any <> any any (itype: 8; msg: "Ping helo - request detected"; sid:4000000054646; rev:1;)
+```
 
+Nous avons modifié l'opérateur de direction afin qu'il soit bidirectionnel.
+
+
+
+---
 
 --
 
@@ -452,6 +474,12 @@ Essayer d'écrire une règle qui Alerte qu'une tentative de session SSH a été 
 ---
 
 **Reponse :**  
+
+```bash
+alert tcp any any -> 10.192.105.119 22 (msg:"SSH DETECTED !"; sid:4000005595; rev:1;)
+```
+
+
 
 ---
 
