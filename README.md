@@ -316,9 +316,9 @@ sudo snort -c myrules.rules -i eth0
 
 Nous voyons plusieurs choses : 
 
-* Snort
+* Le message "WARNING: No preprocessors configured for policy 0." est affiché 
 
-*  Snort s'initialise avec *rule chains* et qu'il en lit exactement une qui des règles de détections. La suite de l’initialisation nous conforte dans cette idée avec par exemple le nombre de caractère du motif de recherche qui contient  X caractères et la longueur de ce  même motif est de X-1
+* Snort s'initialise avec *rule chains* et qu'il en lit exactement une qui des règles de détections. La suite de l’initialisation nous conforte dans cette idée avec par exemple le nombre de caractère du motif de recherche qui contient  X caractères et la longueur de ce  même motif est de X-1
 
 ---
 
