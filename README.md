@@ -32,7 +32,7 @@ Ce travail devra être rendu le dimanche après la fin de la 2ème séance de la
 
 ## Introduction
 
-Dans ce travail de laboratoire, vous allez explorer un système de detection contre les intrusions (IDS) dont l'utilisation es très répandue grace au fait qu'il est gratuit et open source. Il s'appelle [Snort](https://www.snort.org). Il existe des versions de Snort pour Linux et pour Windows.
+Dans ce travail de laboratoire, vous allez explorer un système de détection contre les intrusions (IDS) dont l'utilisation est très répandue grâce au fait qu'il est gratuit et open source. Il s'appelle [Snort](https://www.snort.org). Il existe des versions de Snort pour Linux et pour Windows.
 
 ### Les systèmes de detection d'intrusion
 
@@ -314,7 +314,11 @@ sudo snort -c myrules.rules -i eth0
 
 **Réponse :**  
 
-Nous voyons que Snort s'initialise avec *rule chains* et qu'il en lit exactement une qui des règles de détections. La suite de l’initialisation nous conforte dans cette idée avec par exemple le nombre de caractère du motif de recherche qui contient  X caractères et la longueur de ce  même motif est de X-1
+Nous voyons plusieurs choses : 
+
+* Snort
+
+*  Snort s'initialise avec *rule chains* et qu'il en lit exactement une qui des règles de détections. La suite de l’initialisation nous conforte dans cette idée avec par exemple le nombre de caractère du motif de recherche qui contient  X caractères et la longueur de ce  même motif est de X-1
 
 ---
 
@@ -351,8 +355,6 @@ Verdicts:
 ===============================================================================
 
 ```
-
-
 
 ---
 
