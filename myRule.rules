@@ -1,0 +1,8 @@
+alert tcp any any -> 192.168.1.51 22 (msg:"SSH DETECTED !"; sid:4000005595; rev:1;)
+
+alert icmp any any <> any any (itype: 8; msg: "Ping echo - request detected"; sid:4000000054646; rev:1;)
+
+alert tcp any any -> 2620:0:862:ed1a::1 any (msg:"Visite sur wikipédia!"; sid:4000045; rev:1;)
+
+
+alert tcp any any -> any any (msg:"Mon nom!"; content:"legrand"; sid:4000015; rev:1;)
