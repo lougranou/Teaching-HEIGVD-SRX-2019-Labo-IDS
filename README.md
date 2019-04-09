@@ -446,8 +446,8 @@ Verdicts:
       Retry:            0 (  0.000%)
 ===============================================================================
 
-site web: [http://www.brunolegrand.net](http://www.brunolegrand.net)
 ```
+site web: [http://www.brunolegrand.net](http://www.brunolegrand.net)
 
 ---
 
@@ -500,23 +500,17 @@ Ecrire une règle qui journalise (sans alerter) un message à chaque fois que Wi
 **Réponse :**  
 
 ```bash
-alert tcp any any -> 91.198.174.192 any (msg:"Visite sur wikipédia!"; sid:4000045; rev:1;)
+log tcp any any -> 91.198.174.192 any (msg:"Visite sur wikipédia!"; sid:4000045; rev:1;)
 ```
 
-Les alertes sont journalisées avec leur message dans /var/log/snort/alert.
+Les logs sont journalisées dans /var/log/snort.
 
-Toutes alertes se trouvant dans ce fichier aura son paquet correspondant dans le même répertoire, mais sous le nom de fichier snort.log.xxxxxxxxxx où xxxxxxxxxx est l'heure Unix du commencement du journal.
+
 
 ***Ce code fait office de capture d'écran***
 
 ```bash
-[**] [1:4000045:1] Visite sur wikipédia! [**]
-[Priority: 0] 
-04/04-16:58:16.375920 10.192.105.119:57762 -> 91.198.174.192:443
-TCP TTL:64 TOS:0x0 ID:43636 IpLen:20 DgmLen:60 DF
-******S* Seq: 0xDB408ED5  Ack: 0x0  Win: 0x7210  TcpLen: 40
-TCP Options (5) => MSS: 1460 SackOK TS: 865589987 0 NOP WS: 7 
-...
+15:40:32.493057 IP xps9560.einet.ad.eivd.ch.45026 > text-lb.esams.wikimedia.org.https: Flags [.], ack 167683, win 2119, options [nop,nop,TS val 2711857927 ecr 3607136574], length 0
 
 ```
 
